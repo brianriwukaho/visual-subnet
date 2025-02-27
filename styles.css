@@ -33,6 +33,11 @@
     --blurb-border: #4a90e2;
     --blurb-accent: rgba(74, 144, 226, 0.1);
     --list-item-bg: rgba(74, 144, 226, 0.05);
+
+    /* Binary display colors */
+    --bit-bg: rgba(74, 144, 226, 0.1);
+    --bit-text: var(--primary-color);
+    --bit-separator: rgba(74, 144, 226, 0.2);
 }
 
 /* Reset and base styles */
@@ -246,7 +251,7 @@ label {
 }
 
 .button-container {
-    margin-top: var(--space-sm);
+    display: none;
 }
 
 /* ------ Button Styles ------ */
@@ -345,7 +350,68 @@ button:hover {
     background-color: rgba(231, 76, 60, 0.1);
 }
 
-/* ------ Responsive Design ------ */
+/* Display Group Styles */
+.display-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+}
+
+.decimal-display {
+    font-size: 1.4rem;
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    background: var(--background-white);
+    border-radius: var(--radius-sm);
+}
+
+.binary-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    font-family: monospace;
+    padding: var(--space-md);
+    background: var(--background-white);
+    border-radius: var(--radius-sm);
+    flex-wrap: wrap;
+}
+
+.binary-octet {
+    display: inline-flex;
+    gap: 2px;
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--bit-bg);
+    border-radius: var(--radius-sm);
+}
+
+.bit {
+    display: inline-block;
+    width: 12px;
+    text-align: center;
+    font-weight: bold;
+    color: var(--bit-text);
+}
+
+.bit-separator {
+    display: inline-block;
+    width: 4px;
+    margin: 0 2px;
+    border-right: 2px solid var(--bit-separator);
+}
+
+.octet-separator {
+    color: var(--text-secondary);
+    margin: 0 var(--space-xs);
+    font-weight: bold;
+}
+
+/* Responsive Design */
 @media (max-width: 600px) {
     .ip-input-group {
         flex-direction: column;
@@ -382,5 +448,25 @@ button:hover {
     .network-classes li,
     .system-problems li {
         font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .binary-display {
+        font-size: 0.9rem;
+        padding: var(--space-sm);
+    }
+    
+    .binary-octet {
+        padding: var(--space-xs);
+    }
+    
+    .bit {
+        width: 10px;
+    }
+    
+    .bit-separator {
+        width: 2px;
+        margin: 0 1px;
     }
 }

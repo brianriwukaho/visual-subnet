@@ -100,29 +100,32 @@
                         >
                     </div>
                 </div>
-                <div class="button-container">
-                    <button id="visualize-btn" aria-label="Visualize subnet">Visualize</button>
-                </div>
             </section>
             
-            <section id="result" class="hidden">
+            <section id="result">
                 <div class="result-section">
                     <h2>IPv4 Address</h2>
-                    <div class="ip-display" id="ip-display" aria-live="polite">
-                        <span class="octet octet-1">192</span>.
-                        <span class="octet octet-2">168</span>.
-                        <span class="octet octet-3">1</span>.
-                        <span class="octet octet-4">0</span>
+                    <div class="display-group">
+                        <div class="decimal-display" id="ip-display" aria-live="polite">
+                            <span class="octet octet-1">192</span>.
+                            <span class="octet octet-2">168</span>.
+                            <span class="octet octet-3">1</span>.
+                            <span class="octet octet-4">0</span>
+                        </div>
+                        <div class="binary-display" id="ip-binary-display" aria-live="polite"></div>
                     </div>
                 </div>
                 
                 <div class="result-section">
                     <h2>Subnet Mask</h2>
-                    <div class="ip-display" id="subnet-mask-display" aria-live="polite">
-                        <span class="octet octet-1">255</span>.
-                        <span class="octet octet-2">255</span>.
-                        <span class="octet octet-3">255</span>.
-                        <span class="octet octet-4">0</span>
+                    <div class="display-group">
+                        <div class="decimal-display" id="subnet-mask-display" aria-live="polite">
+                            <span class="octet octet-1">255</span>.
+                            <span class="octet octet-2">255</span>.
+                            <span class="octet octet-3">255</span>.
+                            <span class="octet octet-4">0</span>
+                        </div>
+                        <div class="binary-display" id="subnet-mask-binary-display" aria-live="polite"></div>
                     </div>
                 </div>
                 

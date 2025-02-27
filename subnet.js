@@ -24,8 +24,31 @@ function calculateAddresses(prefix) {
     };
 }
 
+// Binary conversion utilities
+function octetToBinary(octet) {
+    return octet.toString(2).padStart(8, '0').split('');
+}
+
+function octetsToBinary(octets) {
+    return octets.map(octet => octetToBinary(octet));
+}
+
 // UI utilities
-function updateDisplay(elementId, octets) {
+function updateBinaryDisplay(elementId, octets) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const binaryArrays = octetsToBinary(octets);
+    element.innerHTML = binaryArrays.map((bits, octetIndex) => 
+        `<div class="binary-octet octet-${octetIndex + 1}">
+            ${bits.map((bit, bitIndex) => 
+                `<span class="bit">${bit}</span>${(bitIndex + 1) % 4 === 0 && bitIndex < 7 ? '<span class="bit-separator"></span>' : ''}`
+            ).join('')}
+        </div>`
+    ).join('<div class="octet-separator">.</div>');
+}
+
+function updateDecimalDisplay(elementId, octets) {
     const element = document.getElementById(elementId);
     if (!element) return;
     
@@ -61,6 +84,9 @@ function handleOctetInput(e, index) {
     if (value.length >= 3 && nextInput && validateOctet(value)) {
         nextInput.focus();
     }
+    
+    // Recalculate everything
+    calculateAndUpdateAll();
 }
 
 function handleKeyNavigation(e, index) {
@@ -81,7 +107,7 @@ function handleKeyNavigation(e, index) {
 }
 
 // Main calculation function
-function calculateSubnet() {
+function calculateAndUpdateAll() {
     // Gather inputs
     const ipOctets = Array.from({length: 4}, (_, i) => {
         const input = document.getElementById(`octet-${i + 1}`);
@@ -93,7 +119,6 @@ function calculateSubnet() {
     
     // Validate inputs
     if (!ipOctets.every(validateOctet) || !validatePrefix(prefix)) {
-        alert('Please enter valid values for IP address and subnet prefix');
         return;
     }
     
@@ -104,8 +129,10 @@ function calculateSubnet() {
     const { total, usable } = calculateAddresses(prefix);
     
     // Update displays
-    updateDisplay('ip-display', ipOctets);
-    updateDisplay('subnet-mask-display', maskOctets);
+    updateBinaryDisplay('ip-binary-display', ipOctets);
+    updateBinaryDisplay('subnet-mask-binary-display', maskOctets);
+    updateDecimalDisplay('ip-display', ipOctets);
+    updateDecimalDisplay('subnet-mask-display', maskOctets);
     updateText('cidr-prefix', prefix);
     updateText('network-address', networkOctets.join('.'));
     updateText('broadcast-address', broadcastOctets.join('.'));
@@ -128,21 +155,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Set up calculate button
-    const calculateBtn = document.getElementById('visualize-btn');
-    if (calculateBtn) {
-        calculateBtn.addEventListener('click', calculateSubnet);
+    // Set up prefix input listener
+    const prefixInput = document.getElementById('prefix-input');
+    if (prefixInput) {
+        prefixInput.addEventListener('input', calculateAndUpdateAll);
     }
     
-    // Handle Enter key on any input
-    const allInputs = [
-        ...Array.from({length: 4}, (_, i) => document.getElementById(`octet-${i + 1}`)),
-        document.getElementById('prefix-input')
-    ].filter(Boolean);
-    
-    allInputs.forEach(input => {
-        input.addEventListener('keypress', e => {
-            if (e.key === 'Enter') calculateSubnet();
-        });
-    });
+    // Initial calculation
+    calculateAndUpdateAll();
 });
