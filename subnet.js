@@ -34,32 +34,42 @@ function octetsToBinary(octets) {
 }
 
 // UI utilities
-function updateBinaryDisplay(elementId, octets) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-    
-    const binaryArrays = octetsToBinary(octets);
-    element.innerHTML = binaryArrays.map((bits, octetIndex) => 
-        `<div class="binary-octet octet-${octetIndex + 1}">
-            ${bits.map((bit, bitIndex) => 
-                `<span class="bit">${bit}</span>${(bitIndex + 1) % 4 === 0 && bitIndex < 7 ? '<span class="bit-separator"></span>' : ''}`
-            ).join('')}
-        </div>`
-    ).join('<div class="octet-separator">.</div>');
-}
-
 function updateDisplay(elementId, octets) {
     const element = document.getElementById(elementId);
     if (!element) return;
     
+    const prefixInput = document.getElementById('prefix-input');
+    const prefix = parseInt(prefixInput?.value || '24');
+    
     const binaryArrays = octetsToBinary(octets);
-    element.innerHTML = binaryArrays.map((bits, octetIndex) => 
-        `<div class="binary-octet octet-${octetIndex + 1}">
-            ${bits.map((bit, bitIndex) => 
-                `<span class="bit ${bit === '1' ? 'bit-one' : 'bit-zero'}">${bit}</span>${(bitIndex + 1) % 4 === 0 && bitIndex < 7 ? '<span class="bit-separator"></span>' : ''}`
-            ).join('')}
-        </div>`
-    ).join('');
+    element.innerHTML = binaryArrays.map((bits, octetIndex) => {
+        // For subnet mask display, we need to check if bits are used based on prefix
+        const isSubnetMaskDisplay = elementId === 'subnet-mask-display';
+        
+        return `<div class="binary-octet">
+            ${bits.map((bit, bitIndex) => {
+                const bitPosition = octetIndex * 8 + bitIndex;
+                
+                // For subnet mask, determine the background color based on whether the bit is used
+                let bitClass = 'bit';
+                if (isSubnetMaskDisplay) {
+                    // If this is a subnet mask and the bit position is less than prefix
+                    if (bitPosition < prefix) {
+                        // This is a used bit, color by original octet
+                        bitClass += ` bit-used octet-${octetIndex + 1}`;
+                    } else {
+                        // This is an unused bit, use the prefix color
+                        bitClass += ' bit-unused';
+                    }
+                } else {
+                    // For IP address display, always use the octet's color
+                    bitClass += ` octet-${octetIndex + 1}`;
+                }
+                
+                return `<span class="${bitClass}">${bit}</span>${(bitIndex + 1) % 4 === 0 && bitIndex < 7 ? '<span class="bit-separator"></span>' : ''}`;
+            }).join('')}
+        </div>`;
+    }).join('');
 }
 
 function updateText(elementId, text) {
@@ -94,6 +104,21 @@ function handleOctetInput(e, index) {
     calculateAndUpdateAll();
 }
 
+// Add handler for limiting prefix input to 2 digits
+function handlePrefixInput(e) {
+    // Remove non-numeric characters and limit to 2 digits
+    const value = e.target.value.replace(/\D/g, '').slice(0, 2);
+    e.target.value = value;
+    
+    // Ensure the value doesn't exceed 32
+    if (parseInt(value, 10) > 32) {
+        e.target.value = '32';
+    }
+    
+    // Recalculate everything
+    calculateAndUpdateAll();
+}
+
 function handleKeyNavigation(e, index) {
     const prevInput = document.getElementById(`octet-${index - 1}`);
     const nextInput = document.getElementById(`octet-${index + 1}`);
@@ -108,6 +133,22 @@ function handleKeyNavigation(e, index) {
     } else if (e.key === '/' && !nextInput && prefixInput) {
         e.preventDefault();
         prefixInput.focus();
+    }
+}
+
+function updatePrefixInputColor() {
+    const prefixInput = document.getElementById('prefix-input');
+    if (!prefixInput) return;
+    
+    const prefix = parseInt(prefixInput.value || '24');
+    const effectiveOctet = Math.floor(prefix / 8);
+    
+    // Remove any existing octet classes
+    prefixInput.classList.remove('prefix-octet-1', 'prefix-octet-2', 'prefix-octet-3', 'prefix-octet-4');
+    
+    // Add the appropriate octet class
+    if (prefix > 0) {
+        prefixInput.classList.add(`prefix-octet-${effectiveOctet + 1}`);
     }
 }
 
@@ -127,6 +168,8 @@ function calculateAndUpdateAll() {
         return;
     }
     
+    updatePrefixInputColor();
+    
     // Calculate subnet information
     const maskOctets = calculateSubnetMask(prefix);
     const networkOctets = calculateNetworkAddress(ipOctets, maskOctets);
@@ -134,8 +177,6 @@ function calculateAndUpdateAll() {
     const { total, usable } = calculateAddresses(prefix);
     
     // Update displays
-    updateBinaryDisplay('ip-binary-display', ipOctets);
-    updateBinaryDisplay('subnet-mask-binary-display', maskOctets);
     updateDisplay('ip-display', ipOctets);
     updateDisplay('subnet-mask-display', maskOctets);
     updateText('cidr-prefix', prefix);
@@ -163,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set up prefix input listener
     const prefixInput = document.getElementById('prefix-input');
     if (prefixInput) {
-        prefixInput.addEventListener('input', calculateAndUpdateAll);
+        prefixInput.addEventListener('input', handlePrefixInput);
     }
     
     // Initial calculation
