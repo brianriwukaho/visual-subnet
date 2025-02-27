@@ -11,18 +11,96 @@
     <div class="container">
         <header>
             <h1>IPv4 Subnet Visualizer</h1>
+            
+            <div class="info-blurb">
+                <p>fr fr, networking used to be wild back in the day 💀 Before we had this cool CIDR stuff, we were stuck with something called class-based networking and ngl, it was kinda mid</p>
+                
+                <p>so here's the tea ☕️ class-based networking split IPs into these fixed sizes:</p>
+                <ul class="network-classes">
+                    <li>Class A: first bit is 0 (0.0.0.0 to 127.255.255.255) - way too huge tbh</li>
+                    <li>Class B: first bits are 10 (128.0.0.0 to 191.255.255.255) - still massive fr</li>
+                    <li>Class C: first bits are 110 (192.0.0.0 to 223.255.255.255) - sometimes too small no cap</li>
+                </ul>
+                
+                <p>ngl the whole class system was lowkey a mess 😩</p>
+                <ul class="system-problems">
+                    <li>💀 imagine needing 1000 IPs but getting stuck with either 256 (too small) or 65,536 (way too big)</li>
+                    <li>🤡 wasting mad addresses cause you couldn't get the size you actually needed</li>
+                    <li>📉 internet routing tables getting bloated af</li>
+                </ul>
+                
+                <p>but then CIDR came thru and changed the game 😤✨ Instead of being stuck with these preset sizes, you can just say exactly how many bits you want for the network part!</p>
+                
+                <p>like when you see <code>192.168.1.0/24</code>, that just means "use 24 bits for the network" - super clean and flexible no cap 💯</p>
+                
+                <p>try it out below and see how much better this is fr fr 🔥</p>
+            </div>
         </header>
         
         <main>
             <section class="input-section">
-                <label for="cidr-input">Enter IP address in CIDR notation:</label>
-                <div class="input-group">
-                    <input 
-                        type="text" 
-                        id="cidr-input" 
-                        placeholder="e.g., 192.168.1.0/24"
-                        aria-label="IP address in CIDR notation"
-                    >
+                <label>Enter IP address and CIDR prefix:</label>
+                <div class="ip-input-group">
+                    <div class="octet-inputs">
+                        <input 
+                            type="number" 
+                            id="octet-1" 
+                            class="octet-input"
+                            min="0" 
+                            max="255" 
+                            placeholder="192"
+                            aria-label="First octet"
+                            value="192"
+                        >
+                        <span class="octet-separator">.</span>
+                        <input 
+                            type="number" 
+                            id="octet-2" 
+                            class="octet-input"
+                            min="0" 
+                            max="255" 
+                            placeholder="168"
+                            aria-label="Second octet"
+                            value="168"
+                        >
+                        <span class="octet-separator">.</span>
+                        <input 
+                            type="number" 
+                            id="octet-3" 
+                            class="octet-input"
+                            min="0" 
+                            max="255" 
+                            placeholder="1"
+                            aria-label="Third octet"
+                            value="1"
+                        >
+                        <span class="octet-separator">.</span>
+                        <input 
+                            type="number" 
+                            id="octet-4" 
+                            class="octet-input"
+                            min="0" 
+                            max="255" 
+                            placeholder="0"
+                            aria-label="Fourth octet"
+                            value="0"
+                        >
+                    </div>
+                    <div class="prefix-input-container">
+                        <span class="prefix-separator">/</span>
+                        <input 
+                            type="number" 
+                            id="prefix-input" 
+                            class="prefix-input"
+                            min="0" 
+                            max="32" 
+                            placeholder="24"
+                            aria-label="Network prefix"
+                            value="24"
+                        >
+                    </div>
+                </div>
+                <div class="button-container">
                     <button id="visualize-btn" aria-label="Visualize subnet">Visualize</button>
                 </div>
             </section>
