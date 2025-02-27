@@ -48,13 +48,18 @@ function updateBinaryDisplay(elementId, octets) {
     ).join('<div class="octet-separator">.</div>');
 }
 
-function updateDecimalDisplay(elementId, octets) {
+function updateDisplay(elementId, octets) {
     const element = document.getElementById(elementId);
     if (!element) return;
     
-    element.innerHTML = octets.map((octet, i) => 
-        `<span class="octet octet-${i + 1}">${octet}</span>`
-    ).join('.');
+    const binaryArrays = octetsToBinary(octets);
+    element.innerHTML = binaryArrays.map((bits, octetIndex) => 
+        `<div class="binary-octet octet-${octetIndex + 1}">
+            ${bits.map((bit, bitIndex) => 
+                `<span class="bit ${bit === '1' ? 'bit-one' : 'bit-zero'}">${bit}</span>${(bitIndex + 1) % 4 === 0 && bitIndex < 7 ? '<span class="bit-separator"></span>' : ''}`
+            ).join('')}
+        </div>`
+    ).join('');
 }
 
 function updateText(elementId, text) {
@@ -74,14 +79,14 @@ function validatePrefix(value) {
 
 // Event handlers
 function handleOctetInput(e, index) {
-    // Remove non-numeric characters
-    e.target.value = e.target.value.replace(/\D/g, '');
+    // Remove non-numeric characters and limit to 3 digits
+    const value = e.target.value.replace(/\D/g, '').slice(0, 3);
+    e.target.value = value;
     
-    const value = e.target.value;
     const nextInput = document.getElementById(`octet-${index + 1}`);
     
-    // Auto-advance to next input
-    if (value.length >= 3 && nextInput && validateOctet(value)) {
+    // Auto-advance to next input if valid
+    if (value.length === 3 && nextInput && validateOctet(value)) {
         nextInput.focus();
     }
     
@@ -131,8 +136,8 @@ function calculateAndUpdateAll() {
     // Update displays
     updateBinaryDisplay('ip-binary-display', ipOctets);
     updateBinaryDisplay('subnet-mask-binary-display', maskOctets);
-    updateDecimalDisplay('ip-display', ipOctets);
-    updateDecimalDisplay('subnet-mask-display', maskOctets);
+    updateDisplay('ip-display', ipOctets);
+    updateDisplay('subnet-mask-display', maskOctets);
     updateText('cidr-prefix', prefix);
     updateText('network-address', networkOctets.join('.'));
     updateText('broadcast-address', broadcastOctets.join('.'));

@@ -38,6 +38,11 @@
     --bit-bg: rgba(74, 144, 226, 0.1);
     --bit-text: var(--primary-color);
     --bit-separator: rgba(74, 144, 226, 0.2);
+    --bit-one-bg: rgba(74, 144, 226, 0.2);
+    --bit-one-color: #2c5282;
+    --bit-zero-bg: rgba(160, 174, 192, 0.1);
+    --bit-zero-color: #4a5568;
+    --bit-separator-color: rgba(74, 144, 226, 0.2);
 }
 
 /* Reset and base styles */
@@ -374,35 +379,56 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-md);
-    font-family: monospace;
-    padding: var(--space-md);
+    gap: var(--space-lg);
+    font-family: 'Menlo', 'Monaco', monospace;
+    padding: var(--space-xl);
     background: var(--background-white);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .binary-octet {
     display: inline-flex;
-    gap: 2px;
-    padding: var(--space-xs) var(--space-sm);
-    background: var(--bit-bg);
-    border-radius: var(--radius-sm);
+    gap: 4px;
+    padding: var(--space-md);
+    background: var(--background-panel);
+    border-radius: var(--radius-md);
+    transition: transform 0.2s ease;
+}
+
+.binary-octet:hover {
+    transform: translateY(-2px);
 }
 
 .bit {
-    display: inline-block;
-    width: 12px;
-    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
     font-weight: bold;
-    color: var(--bit-text);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    font-size: 1.1rem;
+    user-select: none;
+}
+
+.bit-one {
+    background: var(--bit-one-bg);
+    color: var(--bit-one-color);
+}
+
+.bit-zero {
+    background: var(--bit-zero-bg);
+    color: var(--bit-zero-color);
 }
 
 .bit-separator {
-    display: inline-block;
-    width: 4px;
-    margin: 0 2px;
-    border-right: 2px solid var(--bit-separator);
+    width: 2px;
+    height: 16px;
+    background-color: var(--bit-separator-color);
+    margin: 0 4px;
 }
 
 .octet-separator {
@@ -468,5 +494,38 @@ button:hover {
     .bit-separator {
         width: 2px;
         margin: 0 1px;
+    }
+    
+    .binary-display {
+        padding: var(--space-md);
+        gap: var(--space-sm);
+    }
+    
+    .binary-octet {
+        padding: var(--space-sm);
+        gap: 2px;
+    }
+    
+    .bit {
+        width: 20px;
+        height: 20px;
+        font-size: 1rem;
+    }
+    
+    .bit-separator {
+        height: 14px;
+        margin: 0 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    .binary-display {
+        padding: var(--space-sm);
+    }
+    
+    .bit {
+        width: 18px;
+        height: 18px;
+        font-size: 0.9rem;
     }
 }
