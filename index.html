@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPv4 Subnet Visualizer</title>
+    <meta name="description" content="A tool to visualize IPv4 subnets and CIDR notation">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>IPv4 Subnet Visualizer</h1>
+        </header>
+        
+        <main>
+            <section class="input-section">
+                <label for="cidr-input">Enter IP address in CIDR notation:</label>
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="cidr-input" 
+                        placeholder="e.g., 192.168.1.0/24"
+                        aria-label="IP address in CIDR notation"
+                    >
+                    <button id="visualize-btn" aria-label="Visualize subnet">Visualize</button>
+                </div>
+            </section>
+            
+            <section id="result" class="hidden">
+                <div class="result-section">
+                    <h2>IPv4 Address</h2>
+                    <div class="ip-display" id="ip-display" aria-live="polite">
+                        <span class="octet octet-1">192</span>.
+                        <span class="octet octet-2">168</span>.
+                        <span class="octet octet-3">1</span>.
+                        <span class="octet octet-4">0</span>
+                    </div>
+                </div>
+                
+                <div class="result-section">
+                    <h2>Subnet Mask</h2>
+                    <div class="ip-display" id="subnet-mask-display" aria-live="polite">
+                        <span class="octet octet-1">255</span>.
+                        <span class="octet octet-2">255</span>.
+                        <span class="octet octet-3">255</span>.
+                        <span class="octet octet-4">0</span>
+                    </div>
+                </div>
+                
+                <div class="result-details">
+                    <div class="detail-item">
+                        <h3>CIDR Prefix:</h3>
+                        <span id="cidr-prefix" aria-live="polite">24</span>
+                    </div>
+                    <div class="detail-item">
+                        <h3>Network Address:</h3>
+                        <span id="network-address" aria-live="polite">192.168.1.0</span>
+                    </div>
+                    <div class="detail-item">
+                        <h3>Broadcast Address:</h3>
+                        <span id="broadcast-address" aria-live="polite">192.168.1.255</span>
+                    </div>
+                    <div class="detail-item">
+                        <h3>Total Addresses:</h3>
+                        <span id="address-count" aria-live="polite">256</span>
+                    </div>
+                    <div class="detail-item">
+                        <h3>Usable Addresses:</h3>
+                        <span id="usable-count" aria-live="polite">254</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="subnet.js"></script>
+</body>
+</html>
